@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ired Assistant — Options</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#0b1220; color:#e2e8f0; }
+    .card { max-width: 640px; margin: 40px auto; background:#0f172a; border:1px solid #1f2937; border-radius:12px; padding:20px; }
+    label { display:block; margin: 10px 0 6px; font-size: 13px; opacity:.8; }
+    input { width:100%; padding:10px; border-radius:8px; border:1px solid #1f2937; background:#0b1220; color:#e2e8f0; }
+    button { margin-top:16px; padding:10px 14px; background:#1d4ed8; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+    small { opacity:.7; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Configurações</h2>
+    <label for="apiBase">API Base</label>
+    <input id="apiBase" placeholder="http://localhost:8787" />
+    <label for="teamKey">Team Key</label>
+    <input id="teamKey" placeholder="dev-team-key" />
+    <button id="save">Salvar</button>
+    <p><small>Dica: use ambientes distintos (dev/stage/prod) com chaves diferentes.</small></p>
+  </div>
+  <script type="module">
+    const apiBase = document.getElementById('apiBase');
+    const teamKey = document.getElementById('teamKey');
+    const saveBtn = document.getElementById('save');
+    chrome.storage.sync.get(['apiBase','teamKey'], (cfg) => {
+      apiBase.value = cfg.apiBase || 'http://localhost:8787';
+      teamKey.value = cfg.teamKey || 'dev-team-key';
+    });
+    saveBtn.addEventListener('click', () => {
+      chrome.storage.sync.set({ apiBase: apiBase.value, teamKey: teamKey.value }, () => {
+        saveBtn.textContent = 'Salvo ✓'; setTimeout(()=> saveBtn.textContent='Salvar', 1200);
+      });
+    });
+  </script>
+</body>
+</html>

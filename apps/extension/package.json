@@ -1,0 +1,16 @@
+{
+  "name": "@ired/extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsc -w -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && cp -r src/assets dist/assets || true && cp manifest.json dist/manifest.json && cp -r src/options dist/options && cp -r src/popup dist/popup",
+    "lint": "echo 'no lint'",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "chrome-types": "^0.1.369",
+    "typescript": "^5.4.0"
+  }
+}
