@@ -1,16 +1,25 @@
-const patterns = [
-  { rx: /\b(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?(?:9?\d{4})[-\s]?\d{4}\b/g, token: '[TEL]' },
-  { rx: /[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}/g, token: '[EMAIL]' },
-  { rx: /\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, token: '[CPF]' },
-  { rx: /\b\d{2}\.?\d{3}\.?\d{3}\/??\d{4}-?\d{2}\b/g, token: '[CNPJ]' },
-  { rx: /\b\d{5}-?\d{3}\b/g, token: '[CEP]' },
-  { rx: /\b(?:\d[ -]*?){13,19}\b/g, token: '[PAN]' }
-];
+import { AnalysisReqZ } from './schemas.js';
+import type { z } from 'zod';
 
-export function redactPII(text: string): string {
-  return patterns.reduce((acc, { rx, token }) => acc.replace(rx, token), text);
+type AnalysisReq = z.infer<typeof AnalysisReqZ>;
+export type Turn = AnalysisReq['turns'][number];
+
+// Emails, telefones (com DDI e BR), CPF, CEP — ajuste conforme sua necessidade
+const PII_REGEX =
+  /([\w.-]+@[\w.-]+\.\w{2,})|(\+\d{1,3}\s?\(?\d{2}\)?\s?\d{4,5}-?\d{4})|(\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b)|(\b\d{5}-\d{3}\b)/g;
+
+function redactText(s: string | undefined): string {
+  if (!s) return '';
+  return s.replace(PII_REGEX, '[redacted]');
 }
 
-export function redactTurns(turns: Array<{ text: string } & Record<string, any>>) {
-  return turns.map(t => ({ ...t, text: redactPII(String(t.text ?? '')) }));
+export function redactTurns(turns: Turn[]): Turn[] {
+  return turns.map((t) => ({
+    ...t,
+    text: redactText(t.text),
+    attachments: t.attachments?.map((a) => ({
+      ...a,
+      transcript: a.transcript ? redactText(a.transcript) : a.transcript,
+    })),
+  }));
 }

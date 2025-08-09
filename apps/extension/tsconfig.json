@@ -1,15 +1,29 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["chrome", "node"],             
+
+    // Content script precisa ser script "clássico"
+    "module": "none",
+    "moduleResolution": "node10",
+
+    // Tipos do Chrome; evite @types/node aqui pra não puxar CJS
+    "types": ["chrome"],
+
     "rootDir": "src",
     "outDir": "dist",
+
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    // Evita conflitos com module:none
+    "resolveJsonModule": false,
+    "isolatedModules": false,
+    "verbatimModuleSyntax": false,
+
+    // Opcional: permite manter content em JS puro se quiser
+    "allowJs": true
   },
-  "include": ["src"]
+  "include": ["src", "manifest.json"],
+  "exclude": ["node_modules", "dist"]
 }

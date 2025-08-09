@@ -5,7 +5,7 @@
   "description": "Analisa o humor do cliente e sugere respostas dentro do ERP omnichannel.",
   "permissions": ["storage", "scripting", "activeTab"],
   "host_permissions": ["https://erp.iredinternet.com.br/*"],
-  "background": { "service_worker": "background/index.js", "type": "module" },
+  "background": { "service_worker": "background/index.js" },
   "action": { "default_popup": "popup/index.html" },
   "options_page": "options/index.html",
   "content_scripts": [{
